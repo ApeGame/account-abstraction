@@ -1,0 +1,225 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x7f63C2b13bD9bf6015e388015c1e8A6dB56Fec1d",
+    "txHash": "0xe9148797942cb7b7673d31aa0ac3380f58c609fcb362c578a2fa8708d552b030"
+  },
+  "proxies": [
+    {
+      "address": "0x7e335E6edbaa6B5E6C7C8b42ca19Ded4cFE58DD9",
+      "txHash": "0x2cd48868181a6891286c3693048b7413e109e05a48fad2d5197f84dd5167f67e",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xC82a0Fbf42CF60ABC2ec17AAC892B0407F8EcAdf",
+      "txHash": "0x1a5d8bc15f1a3b2fc94cbf398a90f25a2798bc88baf2bbebe7cacfde17926dcf",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "7268d7598be852f5b5709ffe13702169c3c324bdd3b3f8a8b916212dae3f789d": {
+      "address": "0x9a8CAc3e43515942DffAd819db3622C77101EfeE",
+      "txHash": "0xafad3031c08f48c1134e22629a405cf0deb4c514530d3c9abaab6a21d427d788",
+      "layout": {
+        "solcVersion": "0.8.15",
+        "storage": [
+          {
+            "label": "deposits",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_mapping(t_address,t_struct(DepositInfo)7454_storage)",
+            "contract": "StakeManager",
+            "src": "contracts/core/StakeManager.sol:15"
+          },
+          {
+            "label": "nonceSequenceNumber",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_mapping(t_address,t_mapping(t_uint192,t_uint256))",
+            "contract": "NonceManager",
+            "src": "contracts/core/NonceManager.sol:13"
+          },
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:63",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "2",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:68"
+          },
+          {
+            "label": "_status",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_uint256",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:88"
+          },
+          {
+            "label": "senderCreator",
+            "offset": 0,
+            "slot": "53",
+            "type": "t_contract(SenderCreator)6668",
+            "contract": "EntryPoint",
+            "src": "contracts/core/EntryPoint.sol:33"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(SenderCreator)6668": {
+            "label": "contract SenderCreator",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_mapping(t_uint192,t_uint256))": {
+            "label": "mapping(address => mapping(uint192 => uint256))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(DepositInfo)7454_storage)": {
+            "label": "mapping(address => struct IStakeManager.DepositInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint192,t_uint256)": {
+            "label": "mapping(uint192 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(DepositInfo)7454_storage": {
+            "label": "struct IStakeManager.DepositInfo",
+            "members": [
+              {
+                "label": "deposit",
+                "type": "t_uint112",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "staked",
+                "type": "t_bool",
+                "offset": 14,
+                "slot": "0"
+              },
+              {
+                "label": "stake",
+                "type": "t_uint112",
+                "offset": 15,
+                "slot": "0"
+              },
+              {
+                "label": "unstakeDelaySec",
+                "type": "t_uint32",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "withdrawTime",
+                "type": "t_uint48",
+                "offset": 4,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint112": {
+            "label": "uint112",
+            "numberOfBytes": "14"
+          },
+          "t_uint192": {
+            "label": "uint192",
+            "numberOfBytes": "24"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint32": {
+            "label": "uint32",
+            "numberOfBytes": "4"
+          },
+          "t_uint48": {
+            "label": "uint48",
+            "numberOfBytes": "6"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "6689c655b5b444ad6a4fc7f928a4c6a9e75a1b6d694054b330d1fefb25ba03a3": {
+      "address": "0xC350468964f2a89Aaea3e184FCDA0dEb08D2e0D7",
+      "txHash": "0x80241b56dc5b4765692235ac6d4bb9ab73b74314a3545f8555211b77f3c31c8d",
+      "layout": {
+        "solcVersion": "0.8.15",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:63",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:68"
+          },
+          {
+            "label": "accountImplementation",
+            "offset": 2,
+            "slot": "0",
+            "type": "t_contract(SimpleAccount)9094",
+            "contract": "SimpleAccountFactory",
+            "src": "contracts/samples/SimpleAccountFactory.sol:16"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(SimpleAccount)9094": {
+            "label": "contract SimpleAccount",
+            "numberOfBytes": "20"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    }
+  }
+}
