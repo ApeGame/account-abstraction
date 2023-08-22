@@ -23,7 +23,7 @@ contract TestRevertAccount is IAccount {
     /**
      * @return accountType 1: simple account; 2: gnosis account....
      */
-    function getAccountType() external view returns (uint8 accountType) {
+    function getAccountType() external pure returns (uint8 accountType) {
         return 0;
     }
 

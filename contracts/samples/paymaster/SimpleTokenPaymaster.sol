@@ -15,6 +15,8 @@ contract SimpleTokenPaymaster is BasePaymaster, Verify {
     event SetToken(address indexed token);
     event Received(address indexed sender, uint256 value);
 
+    event PostOpReverted(address indexed user, uint256 preCharge);
+
     event UserOperationPayInfo(
         address indexed user,
         PostOpMode indexed mode,
@@ -90,29 +92,39 @@ contract SimpleTokenPaymaster is BasePaymaster, Verify {
                 20;
             require(paymasterAndDataLength_ != 0, "TPM: invalid data length");
 
-            (uint256 price_, uint256 deadline_, bytes memory data_) = abi
-                .decode(
+            (
+                bool prepay_,
+                uint256 price_,
+                uint256 deadline_,
+                bytes memory data_
+            ) = abi.decode(
                     _userOp.paymasterAndData[20:_userOp
                         .paymasterAndData
                         .length],
-                    (uint256, uint256, bytes)
+                    (bool, uint256, uint256, bytes)
                 );
 
             require(
-                verifySig(_userOp, price_, deadline_, data_),
+                verifySig(_userOp, prepay_, price_, deadline_, data_),
                 "TPM: Invlida Signature"
             );
 
             uint256 tokenAmount = weiToToken(_requiredPreFund, price_);
+            if (prepay_) {
+                require(
+                    token.balanceOf(_userOp.sender) >= tokenAmount,
+                    "TPM: Insufficient payable token for sender"
+                );
+            } else {
+                SafeERC20.safeTransferFrom(
+                    token,
+                    _userOp.sender,
+                    address(this),
+                    tokenAmount
+                );
+            }
 
-            SafeERC20.safeTransferFrom(
-                token,
-                _userOp.sender,
-                address(this),
-                tokenAmount
-            );
-
-            context = abi.encode(tokenAmount, price_, _userOp.sender);
+            context = abi.encode(tokenAmount, prepay_, price_, _userOp.sender);
             validationResult = _packValidationData(
                 false,
                 uint48(block.timestamp + 60),
@@ -131,26 +143,43 @@ contract SimpleTokenPaymaster is BasePaymaster, Verify {
         bytes calldata _context,
         uint256 _actualGasCost
     ) internal override {
-        (uint256 preCharge_, uint256 price_, address userOpSender_) = abi
-            .decode(_context, (uint256, uint256, address));
+        (
+            uint256 preCharge_,
+            bool prepay_,
+            uint256 price_,
+            address userOpSender_
+        ) = abi.decode(_context, (uint256, bool, uint256, address));
 
+        if (_mode == PostOpMode.postOpReverted) {
+            emit PostOpReverted(userOpSender_, preCharge_);
+            return;
+        }
         uint256 actualTokenNeeded_ = weiToToken(_actualGasCost, price_) +
             fixedFee;
 
         unchecked {
-            if (actualTokenNeeded_ > preCharge_) {
+            if (prepay_) {
                 SafeERC20.safeTransferFrom(
                     token,
                     userOpSender_,
                     address(this),
-                    actualTokenNeeded_ - preCharge_
+                    actualTokenNeeded_
                 );
             } else {
-                SafeERC20.safeTransfer(
-                    token,
-                    userOpSender_,
-                    preCharge_ - actualTokenNeeded_
-                );
+                if (actualTokenNeeded_ > preCharge_) {
+                    SafeERC20.safeTransferFrom(
+                        token,
+                        userOpSender_,
+                        address(this),
+                        actualTokenNeeded_ - preCharge_
+                    );
+                } else {
+                    SafeERC20.safeTransfer(
+                        token,
+                        userOpSender_,
+                        preCharge_ - actualTokenNeeded_
+                    );
+                }
             }
 
             emit UserOperationPayInfo(
@@ -165,6 +194,7 @@ contract SimpleTokenPaymaster is BasePaymaster, Verify {
 
     function verifySig(
         UserOperation calldata userOp,
+        bool _prepay,
         uint256 _price,
         uint256 _deadline,
         bytes memory _data
@@ -177,6 +207,7 @@ contract SimpleTokenPaymaster is BasePaymaster, Verify {
                     abi.encode(
                         userOp.sender,
                         userOp.nonce,
+                        _prepay,
                         _price,
                         _deadline,
                         block.chainid

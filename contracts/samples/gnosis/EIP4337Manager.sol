@@ -6,9 +6,9 @@ pragma solidity ^0.8.7;
 /* solhint-disable reason-string */
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@gnosis.pm/safe-contracts/contracts/GnosisSafeL2.sol";
-import "@gnosis.pm/safe-contracts/contracts/base/Executor.sol";
-import "@gnosis.pm/safe-contracts/contracts/examples/libraries/GnosisSafeStorage.sol";
+import "lib/@gnosis.pm/safe-contracts/contracts/GnosisSafeL2.sol";
+import "lib/@gnosis.pm/safe-contracts/contracts/base/Executor.sol";
+import "lib/@gnosis.pm/safe-contracts/contracts/examples/libraries/GnosisSafeStorage.sol";
 import "./EIP4337Fallback.sol";
 import "../../interfaces/IAccount.sol";
 import "../../interfaces/IEntryPoint.sol";

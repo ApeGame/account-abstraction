@@ -94,7 +94,7 @@ contract EntryPoint is
                 // it must be a revert caused by paymaster.
                 revert FailedOp(opIndex, "AA95 out of gas");
             }
-            // 如果innerHandleOp (calldata)调用失败了, 还是要 调用的postOP, 和退钱操作
+            // 如果innerHandleOp (paymaster post)调用失败了, 还是要 调用的postOP, 和退钱操作
             uint256 actualGas = preGas - gasleft() + opInfo.preOpGas;
             // collected 是 执行 useroperation 中 (validata  & calldata ) 的gas * gasprice 的花费
             collected = _handlePostOp(

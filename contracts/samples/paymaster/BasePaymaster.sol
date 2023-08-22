@@ -84,7 +84,7 @@ abstract contract BasePaymaster is IPaymaster, OwnableUpgradeable {
     }
 
     /**
-     * withdraw value from the deposit
+     * withdraw value from the entrypoint
      * @param withdrawAddress target to send to
      * @param amount to withdraw
      */

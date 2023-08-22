@@ -3,8 +3,8 @@ pragma solidity ^0.8.7;
 
 /* solhint-disable no-inline-assembly */
 
-import "@gnosis.pm/safe-contracts/contracts/handler/DefaultCallbackHandler.sol";
-import "@gnosis.pm/safe-contracts/contracts/GnosisSafeL2.sol";
+import "lib/@gnosis.pm/safe-contracts/contracts/handler/DefaultCallbackHandler.sol";
+import "lib/@gnosis.pm/safe-contracts/contracts/GnosisSafeL2.sol";
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "../../interfaces/IAccount.sol";

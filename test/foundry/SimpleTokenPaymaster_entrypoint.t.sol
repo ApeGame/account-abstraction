@@ -113,9 +113,10 @@ contract SimpleTokenPaymasterEntrypointTest is Test {
         op.paymasterAndData = abi.encodePacked(
             address(simpleTokenPaymaster),
             abi.encode(
+                true,
                 price_,
                 deadline_,
-                generateSig(op.sender, op.nonce, price_, deadline_)
+                generateSig(op.sender, op.nonce, true, price_, deadline_)
             )
         );
 
@@ -173,12 +174,22 @@ contract SimpleTokenPaymasterEntrypointTest is Test {
     function generateSig(
         address sender,
         uint256 nonce,
+        bool prepay,
         uint256 price,
         uint256 deadline
     ) internal returns (bytes memory) {
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(
             publicKeyPrivateKey,
-            keccak256(abi.encode(sender, nonce, price, deadline, block.chainid))
+            keccak256(
+                abi.encode(
+                    sender,
+                    nonce,
+                    prepay,
+                    price,
+                    deadline,
+                    block.chainid
+                )
+            )
         );
         return abi.encodePacked(r, s, bytes1(v - 27));
     }

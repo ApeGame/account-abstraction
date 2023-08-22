@@ -3,7 +3,7 @@ pragma solidity ^0.8.12;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/Create2.sol";
-import "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
+import "lib/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
 import "./EIP4337Manager.sol";
 
 /**
@@ -81,6 +81,7 @@ contract GnosisSafeAccountFactory is Initializable {
         uint256 _threshold,
         uint256 _salt
     ) public view returns (address) {
+        require(_owners.length <= 100, "too many owners");
         bytes memory initializer = getInitializer(_owners, _threshold);
         //copied from deployProxyWithNonce
         bytes32 salt2 = keccak256(

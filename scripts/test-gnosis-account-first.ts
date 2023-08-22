@@ -119,7 +119,18 @@ function gnosisHash (
   const txHash = keccak256(
     ethers.AbiCoder.defaultAbiCoder().encode(
       ['bytes32', 'address', 'uint256', 'bytes32', 'uint8', 'uint256', 'uint256', 'uint256', 'address', 'address', 'uint256'],
-      ['0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8', to, value, keccak256(data), operation, safeTxGas, baseGas, gasPrice, gasToken, refundReceiver, nonce]
+      ['0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8',
+        to,
+        value,
+        keccak256(data),
+        operation,
+        safeTxGas,
+        baseGas,
+        gasPrice,
+        gasToken,
+        refundReceiver,
+        nonce
+      ]
     )
   )
   const domainSeparator = keccak256(

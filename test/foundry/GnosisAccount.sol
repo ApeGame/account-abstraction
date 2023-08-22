@@ -67,6 +67,10 @@ contract GnosisAccount is Test {
             address(1),
             2 ether
         );
+        console.log(block.chainid);
+        console.logAddress(address(mt));
+        console.logBytes(data);
+        console.logAddress(gnosisAccount);
 
         bytes32 hash_ = GnosisSafe(payable(gnosisAccount)).getTransactionHash(
             address(mt),
@@ -80,6 +84,7 @@ contract GnosisAccount is Test {
             address(0),
             0
         );
+        console.logBytes32(hash_);
 
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(ownerPrivate, hash_);
         bytes memory signData_ = abi.encodePacked(r, s, v);

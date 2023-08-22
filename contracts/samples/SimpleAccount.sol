@@ -60,7 +60,7 @@ contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable {
      */
     function getAccountType()
         external
-        view
+        pure
         override
         returns (uint8 accountType)
     {
