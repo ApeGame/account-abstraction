@@ -1,0 +1,7 @@
+coq:
+    entrypoint address     : 0x79a2557f8b6E1B8187eE9af155978686a7574144
+    simple account factory : 0x95F847a2288eF61866427FDb3c598E2117E0E8AD
+    erc20 token            : 0x13D91374CcB046ca0B66688AdCe4B2B62837A86a
+    simple token paymaster : 0xafb5F77f16e2Ad3f7aD05741a03c193c038b9D3C
+    gnosis factory         : 0xfDC874D28E60742FeF78605F426eF5035cd469Cd
+    subsidy paymaster      : 0xe340DE9dec782cc432FBcc374302b5C68396DED8
