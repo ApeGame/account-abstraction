@@ -22,7 +22,7 @@ import {calldataKeccak} from "../core/Helpers.sol";
 struct UserOperation {
     address sender;
     uint256 nonce;
-    bytes initCode; // 只需要在第一次时创建 自己的合约账号,填写自己的 init code (factory + initcode)
+    bytes initCode; // factory(0:20) + createAccountData(21:~)
     bytes callData;
     uint256 callGasLimit;
     uint256 verificationGasLimit;

@@ -29,9 +29,7 @@ abstract contract BasePaymaster is IPaymaster, OwnableUpgradeable {
         bytes32 userOpHash,
         uint256 maxCost
     ) external override returns (bytes memory context, uint256 validationData) {
-        // 只有 entrypoint 可以调用
         _requireFromEntryPoint();
-        // 调用 paymaster 的 _validatePaymasterUserOp
         return _validatePaymasterUserOp(userOp, userOpHash, maxCost);
     }
 
@@ -47,10 +45,9 @@ abstract contract BasePaymaster is IPaymaster, OwnableUpgradeable {
         bytes calldata context,
         uint256 actualGasCost
     ) external override {
-        // 只有 entrypoint 可以调用
+        // only entrypoint call call
         _requireFromEntryPoint();
 
-        // 调用 paymaster 的 _postOp
         _postOp(mode, context, actualGasCost);
     }
 

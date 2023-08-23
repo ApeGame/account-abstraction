@@ -38,10 +38,8 @@ contract NonceManager is INonceManager {
         internal
         returns (bool)
     {
-        // nonce 右移 64 bit, 每64bit=》+1
         uint192 key = uint192(nonce >> 64);
-        uint64 seq = uint64(nonce); // 每 64 bit 一循环
-        // 感觉有点没必要那么设计.. slot 是有限的. 2^256
+        uint64 seq = uint64(nonce);
         return nonceSequenceNumber[sender][key]++ == seq;
     }
 }

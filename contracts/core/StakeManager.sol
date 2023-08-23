@@ -43,7 +43,6 @@ abstract contract StakeManager is IStakeManager {
         depositTo(msg.sender);
     }
 
-    // 给 account.deposit 加 amount
     function _incrementDeposit(address account, uint256 amount) internal {
         DepositInfo storage info = deposits[account];
         uint256 newAmount = info.deposit + amount;

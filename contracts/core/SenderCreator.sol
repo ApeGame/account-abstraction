@@ -8,7 +8,6 @@ pragma solidity ^0.8.12;
 contract SenderCreator {
     /**
      * call the "initCode" factory to create and return the sender account address
-     * 通过 account工厂 创建一个用户合约, 用户合约被存储在  内存0~32 的内存值中.
      * @param initCode the initCode value from a UserOp. contains 20 bytes of factory address, followed by calldata
      * @return sender the returned address of the created account, or zero address on failure.
      */
