@@ -5,3 +5,4 @@ coq:
     simple token paymaster : 0xafb5F77f16e2Ad3f7aD05741a03c193c038b9D3C
     gnosis factory         : 0xfDC874D28E60742FeF78605F426eF5035cd469Cd
     subsidy paymaster      : 0xe340DE9dec782cc432FBcc374302b5C68396DED8
+    multisend call only   : 0xc21E9AF7bDEe3D72c355f8E28A0fD73a86529C90

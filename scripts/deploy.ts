@@ -1,9 +1,8 @@
 
-import { types } from 'hardhat/config'
+import { types, task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 // import { EntryPoint } from './../typechain/contracts/core/EntryPoint'
 // import { GnosisSafe } from './../typechain/@gnosis.pm/safe-contracts/contracts/GnosisSafe'
-import { task } from 'hardhat/config'
 import { Sleep } from './common'
 
 const sleepTime = 6000 // 6s
@@ -13,13 +12,14 @@ const sleepTime = 6000 // 6s
 // hardhat deploy --network coq --contract tokenpaymster --entrypoint 0x83DA221A7D6D96357794eC749a658811997Ee039 --token 0x13D91374CcB046ca0B66688AdCe4B2B62837A86a --pubkey 0xe184aF3b0b9CeFf9C2d11B1D33FF31Cc483C13F2 --fee 0.01
 // hardhat deploy --network coq --contract gnosisfactory --entrypoint 0x83DA221A7D6D96357794eC749a658811997Ee039
 // hardhat deploy --network coq --contract subsidypaymaster --entrypoint 0x83DA221A7D6D96357794eC749a658811997Ee039 --token 0x13D91374CcB046ca0B66688AdCe4B2B62837A86a --pubkey 0xe184aF3b0b9CeFf9C2d11B1D33FF31Cc483C13F2
+// hardhat deploy --network coq --contract multisendcallonly
 
 task('deploy', 'deploy factory contract for gnosis')
   .addParam('token', 'erc20 contract (dev network will create it when it is undefined)', '', types.string)
   .addParam('entrypoint', "the entrypoint's address", '', types.string)
   .addParam('pubkey', 'public key (tokenpaymster & subsidypaymaster need it)', '', types.string)
   .addParam('fee', 'fee of tokenpaymster (only tokenpaymster)', '', types.string)
-  .addParam('contract', 'Which contract is deployed? (all|entrypoint|accountfactory|tokenpaymster|gnosisfactory|subsidypaymaster)')
+  .addParam('contract', 'Which contract is deployed? (all|entrypoint|accountfactory|tokenpaymster|gnosisfactory|multisendcallonly|subsidypaymaster)')
   .setAction(async (taskArgs, hre) => {
     let token = taskArgs.token
     let entrypoint: string = taskArgs.entrypoint
@@ -54,7 +54,8 @@ task('deploy', 'deploy factory contract for gnosis')
       const accountFactory = await deployAccountFactory(hre, entrypoint)
       const tokenPaymaster = await deployTokenPaymaster(hre, entrypoint, token, pubkey, fee)
       const gnosisFactory = await deployGnosisSafeProxyFactory(hre, entrypoint)
-      const subsidypaymaster = await deploySubsidyPaymaster(hre, entrypoint, pubkey)
+      const subsidyPaymaster = await deploySubsidyPaymaster(hre, entrypoint, pubkey)
+      const multiSendCallOnly = await deployMultiSendCallOnly(hre)
       console.log('')
       console.log('------------------- deployed contract -------------------')
       console.log('')
@@ -63,7 +64,8 @@ task('deploy', 'deploy factory contract for gnosis')
       console.log('erc20 token            :', token)
       console.log(`simple token paymaster : ${tokenPaymaster}`)
       console.log(`gnosis factory         : ${gnosisFactory}`)
-      console.log(`subsidy paymaster      : ${subsidypaymaster}`)
+      console.log(`subsidy paymaster      : ${subsidyPaymaster}`)
+      console.log(`multisend call only    : ${multiSendCallOnly}`)
     } else if (contract === 'entrypoint') {
       entrypoint = await deployEntrypoint(hre)
       console.log('')
@@ -113,6 +115,12 @@ task('deploy', 'deploy factory contract for gnosis')
       console.log('------------------- deployed contract -------------------')
       console.log('')
       console.log(`gnosis factory         : ${gnosisFactory}`)
+    } else if (contract === 'multisendcallonly') {
+      const multiSendCallOnly = await deployMultiSendCallOnly(hre)
+      console.log('')
+      console.log('------------------- deployed contract -------------------')
+      console.log('')
+      console.log(`multisend call only    : ${multiSendCallOnly}`)
     } else if (contract === 'subsidypaymaster') {
       if (!hre.ethers.isAddress(entrypoint)) {
         console.log('invalid entrypoint')
@@ -136,7 +144,7 @@ task('deploy', 'deploy factory contract for gnosis')
     }
   })
 
-async function deployToken (hre: HardhatRuntimeEnvironment) {
+async function deployToken (hre: HardhatRuntimeEnvironment): Promise<string> {
   const ethers = hre.ethers
   const MyToken = await ethers.getContractFactory('MyToken')
   const mytoken = await MyToken.deploy('my token', 'MT')
@@ -155,7 +163,7 @@ async function deployToken (hre: HardhatRuntimeEnvironment) {
   return token
 }
 
-async function deployEntrypoint (hre: HardhatRuntimeEnvironment) {
+async function deployEntrypoint (hre: HardhatRuntimeEnvironment): Promise<string> {
   const ethers = hre.ethers
   const upgrades = hre.upgrades
   // deploy sender creator
@@ -193,7 +201,7 @@ async function deployEntrypoint (hre: HardhatRuntimeEnvironment) {
   return entryPointProxyAddr
 }
 
-async function deployAccountFactory (hre: HardhatRuntimeEnvironment, entrypoint: string) {
+async function deployAccountFactory (hre: HardhatRuntimeEnvironment, entrypoint: string): Promise<string> {
   const ethers = hre.ethers
   const upgrades = hre.upgrades
   const SimpleAccount = await ethers.getContractFactory('SimpleAccount')
@@ -231,7 +239,7 @@ async function deployAccountFactory (hre: HardhatRuntimeEnvironment, entrypoint:
   return simpleAccountFactoryProxyAddr
 }
 
-async function deployTokenPaymaster (hre: HardhatRuntimeEnvironment, entrypoint: string, token: string, pubkey: string, fee: bigint) {
+async function deployTokenPaymaster (hre: HardhatRuntimeEnvironment, entrypoint: string, token: string, pubkey: string, fee: bigint): Promise<string> {
   const ethers = hre.ethers
   const upgrades = hre.upgrades
   const owner = (await ethers.getSigners())[0].address
@@ -256,7 +264,7 @@ async function deployTokenPaymaster (hre: HardhatRuntimeEnvironment, entrypoint:
   return simpleTokenPaymasterProxyAddr
 }
 
-async function deployGnosisSafeProxyFactory (hre: HardhatRuntimeEnvironment, entrypoint: string) {
+async function deployGnosisSafeProxyFactory (hre: HardhatRuntimeEnvironment, entrypoint: string): Promise<string> {
   const ethers = hre.ethers
   const upgrades = hre.upgrades
   const GnosisSafeProxyFactory = await ethers.getContractFactory('GnosisSafeProxyFactory')
@@ -317,7 +325,7 @@ async function deployGnosisSafeProxyFactory (hre: HardhatRuntimeEnvironment, ent
   return gnosisSafeAccountFactoryProxyAddress
 }
 
-async function deploySubsidyPaymaster (hre: HardhatRuntimeEnvironment, entrypoint: string, pubkey: string) {
+async function deploySubsidyPaymaster (hre: HardhatRuntimeEnvironment, entrypoint: string, pubkey: string): Promise<string> {
   const ethers = hre.ethers
   const upgrades = hre.upgrades
   const owner = (await ethers.getSigners())[0].address
@@ -341,4 +349,22 @@ async function deploySubsidyPaymaster (hre: HardhatRuntimeEnvironment, entrypoin
     })
   }
   return subsidyPaymasterAddr
+}
+
+async function deployMultiSendCallOnly (hre: HardhatRuntimeEnvironment): Promise<string> {
+  const ethers = hre.ethers
+  const MultiSendCallOnly = await ethers.getContractFactory('MultiSendCallOnly')
+  const multiSendCallOnly = await MultiSendCallOnly.deploy()
+  const multiSendCallOnlyAddr = await multiSendCallOnly.getAddress()
+  // console.log(`subsidy paymaster      : ${subsidyPaymasterAddr}`)
+  if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
+    await Sleep(sleepTime)
+
+    await hre.run('verify:verify', {
+      address: multiSendCallOnlyAddr,
+      constructorArguments: [],
+      contract: 'contracts/samples/gnosis/MultiSendCallOnly.sol:MultiSendCallOnly'
+    })
+  }
+  return multiSendCallOnlyAddr
 }

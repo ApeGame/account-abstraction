@@ -40,9 +40,7 @@ const config: HardhatUserConfig = {
     // }
   },
   networks: {
-    dev: { url: 'http://localhost:8545', chainId: 31337 },
-    // github action starts localgeth service, for gas calculations
-    // localgeth: { url: 'http://localgeth:8545' },
+    dev: { url: 'http://127.0.0.1:8545', chainId: 31337 },
     coq: {
       url: 'https://shanghai-inner-rpc.ankr.com/all/coq_testnet/rpc',
       chainId: 12077,
