@@ -607,10 +607,9 @@ contract EntryPoint is
         unchecked {
             MemoryUserOp memory mUserOp = opInfo.mUserOp;
             uint256 verificationGasLimit = mUserOp.verificationGasLimit;
-            require(
-                verificationGasLimit > gasUsedByValidateAccountPrepayment,
-                "AA41 too little verificationGas"
-            );
+            if (verificationGasLimit <= gasUsedByValidateAccountPrepayment) {
+                revert FailedOp(opIndex, "AA41 too little verificationGas");
+            }
             uint256 gas = verificationGasLimit -
                 gasUsedByValidateAccountPrepayment;
 
