@@ -62,28 +62,28 @@ contract SubsidyPaymaster is BasePaymaster, Verify {
             uint256 paymasterAndDataLength_ = _userOp.paymasterAndData.length -
                 20;
             require(paymasterAndDataLength_ != 0, "TPM: invalid data length");
-            (uint256 subsidy_, uint256 deadline_, bytes memory data_) = abi
+            (uint256 subsidyPct_, uint256 deadline_, bytes memory data_) = abi
                 .decode(
                     _userOp.paymasterAndData[20:_userOp
                         .paymasterAndData
                         .length],
                     (uint256, uint256, bytes)
                 );
+
+            require(subsidyPct_ <= 10000, "TPM: Invalid subsidyPCT");
+
             require(
-                verifySig(_userOp, subsidy_, deadline_, data_),
+                verifySig(_userOp, subsidyPct_, deadline_, data_),
                 "TPM: Invlida Signature"
             );
-            uint256 prefund_;
-            if (_requiredPreFund > subsidy_) {
-                prefund_ = _requiredPreFund - subsidy_;
-                require(
-                    deposits[_userOp.sender] >= prefund_,
-                    "TPM: Insufficient prepaid funds for sender"
-                );
-                deposits[_userOp.sender] -= prefund_;
-            }
 
-            context = abi.encode(subsidy_, prefund_, _userOp.sender);
+            require(
+                deposits[_userOp.sender] >= _requiredPreFund,
+                "TPM: Insufficient prepaid funds for sender"
+            );
+            deposits[_userOp.sender] -= _requiredPreFund;
+
+            context = abi.encode(subsidyPct_, _requiredPreFund, _userOp.sender);
 
             validationResult = _packValidationData(
                 false,
@@ -104,27 +104,30 @@ contract SubsidyPaymaster is BasePaymaster, Verify {
         uint256 _actualGasCost
     ) internal override {
         unchecked {
-            (uint256 subsidy_, uint256 prefund_, address userOpSender_) = abi
-                .decode(_context, (uint256, uint256, address));
+            (
+                uint256 subsidyPct_,
+                uint256 _requiredPreFund,
+                address userOpSender_
+            ) = abi.decode(_context, (uint256, uint256, address));
 
             if (_mode == PostOpMode.postOpReverted) {
-                emit PostOpReverted(userOpSender_, prefund_);
+                emit PostOpReverted(userOpSender_, _requiredPreFund);
                 return;
             }
 
-            uint256 need_;
-            if (_actualGasCost > subsidy_) {
-                need_ = _actualGasCost - subsidy_;
-            }
+            // Usage requires payment
+            uint256 subsidy_ = (_actualGasCost * subsidyPct_) / 10000;
+            uint256 need_ = _actualGasCost - subsidy_;
 
-            uint256 balance_ = deposits[userOpSender_];
-            if (prefund_ >= need_) {
-                // refund
-                deposits[userOpSender_] = balance_ + (prefund_ - need_);
+            if (_requiredPreFund >= need_) {
+                deposits[userOpSender_] += (_requiredPreFund - need_);
             } else {
-                if (balance_ >= (need_ - prefund_)) {
+                uint256 balance_ = deposits[userOpSender_];
+                if (balance_ >= (need_ - _requiredPreFund)) {
                     // supplement
-                    deposits[userOpSender_] = balance_ - (need_ - prefund_);
+                    deposits[userOpSender_] =
+                        balance_ -
+                        (need_ - _requiredPreFund);
                 } else {
                     require(false, "TPM: Insufficient payment amount");
                 }

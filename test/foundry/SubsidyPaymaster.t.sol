@@ -32,7 +32,7 @@ contract SubsidyPaymasterTest is Test {
     }
 
     function testValidatePaymasterUserOp() public {
-        uint256 subsidy_ = 600000 * 1 gwei;
+        uint256 subsidyPct_ = 5000;
         uint256 deadline_ = block.timestamp + 1;
         UserOperation memory op = UserOperation({
             sender: owner,
@@ -59,9 +59,9 @@ contract SubsidyPaymasterTest is Test {
         op.paymasterAndData = abi.encodePacked(
             address(subsidyPaymaster),
             abi.encode(
-                subsidy_,
+                subsidyPct_,
                 deadline_ + 1,
-                generateSig(op, subsidy_, deadline_)
+                generateSig(op, subsidyPct_, deadline_)
             )
         );
         subsidyPaymaster.validatePaymasterUserOp(
@@ -81,9 +81,9 @@ contract SubsidyPaymasterTest is Test {
         op.paymasterAndData = abi.encodePacked(
             address(subsidyPaymaster),
             abi.encode(
-                subsidy_,
+                subsidyPct_,
                 deadline_,
-                generateSig(op, subsidy_, deadline_)
+                generateSig(op, subsidyPct_, deadline_)
             )
         );
 
@@ -103,7 +103,17 @@ contract SubsidyPaymasterTest is Test {
 
         require(
             subsidyPaymaster.balanceOf(op.sender) ==
-                1 ether - (1200000 * 1 gwei - subsidy_)
+                1 ether - (1200000 * 1 gwei)
+        );
+        op.paymasterAndData = abi.encodePacked(
+            address(subsidyPaymaster),
+            abi.encode(20000, deadline_, generateSig(op, 20000, deadline_))
+        );
+        vm.expectRevert("TPM: Invalid subsidyPCT");
+        subsidyPaymaster.validatePaymasterUserOp(
+            op,
+            bytes32(uint256(0)),
+            1200000 * 1 gwei
         );
 
         op.nonce = 2;
@@ -118,43 +128,35 @@ contract SubsidyPaymasterTest is Test {
         );
         require(
             subsidyPaymaster.balanceOf(op.sender) ==
-                1 ether - (1200000 * 1 gwei - subsidy_) - 1200000 * 1 gwei
+                1 ether - (1200000 * 1 gwei * 2)
         );
     }
 
     function testPostOp() public {
         subsidyPaymaster.postOp(
             IPaymaster.PostOpMode.opSucceeded,
-            abi.encode(600000 * 1 gwei, 600000 * 1 gwei, owner),
+            abi.encode(10000, 1200000 * 1 gwei, owner),
             1200000 * 1 gwei
+        );
+        require(subsidyPaymaster.balanceOf(owner) == 1200000 * 1 gwei);
+
+        subsidyPaymaster.postOp(
+            IPaymaster.PostOpMode.opSucceeded,
+            abi.encode(5000, 0, owner),
+            2400000 * 1 gwei
         );
         require(subsidyPaymaster.balanceOf(owner) == 0);
 
         subsidyPaymaster.postOp(
-            IPaymaster.PostOpMode.opSucceeded,
-            abi.encode(600000 * 1 gwei, 700000 * 1 gwei, owner),
-            1200000 * 1 gwei
-        );
-        require(subsidyPaymaster.balanceOf(owner) == 100000 * 1 gwei);
-
-        subsidyPaymaster.postOp(
             IPaymaster.PostOpMode.postOpReverted,
-            abi.encode(600000 * 1 gwei, 700000 * 1 gwei, owner),
+            abi.encode(5000, 0, owner),
             1200000 * 1 gwei
         );
-        require(subsidyPaymaster.balanceOf(owner) == 100000 * 1 gwei);
-
-        vm.startPrank(owner);
-        subsidyPaymaster.withdrawFromDeposit(
-            owner,
-            subsidyPaymaster.balanceOf(owner)
-        );
-        vm.stopPrank();
 
         vm.expectRevert("TPM: Insufficient payment amount");
         subsidyPaymaster.postOp(
             IPaymaster.PostOpMode.opSucceeded,
-            abi.encode(600000 * 1 gwei, 600000 * 1 gwei, owner),
+            abi.encode(5000, 0, owner),
             1300000 * 1 gwei
         );
     }

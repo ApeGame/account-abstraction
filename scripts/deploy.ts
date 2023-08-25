@@ -14,7 +14,7 @@ const sleepTime = 6000 // 6s
 // hardhat deploy --network coq --contract subsidypaymaster --entrypoint 0x83DA221A7D6D96357794eC749a658811997Ee039 --token 0x13D91374CcB046ca0B66688AdCe4B2B62837A86a --pubkey 0xe184aF3b0b9CeFf9C2d11B1D33FF31Cc483C13F2
 // hardhat deploy --network coq --contract multisendcallonly
 
-task('deploy', 'deploy factory contract for gnosis')
+task('deploy', 'deploy contract')
   .addParam('token', 'erc20 contract (dev network will create it when it is undefined)', '', types.string)
   .addParam('entrypoint', "the entrypoint's address", '', types.string)
   .addParam('pubkey', 'public key (tokenpaymster & subsidypaymaster need it)', '', types.string)
@@ -140,7 +140,7 @@ task('deploy', 'deploy factory contract for gnosis')
       console.log('')
       console.log(`subsidy paymaster      : ${subsidypaymaster}`)
     } else {
-      console.log('please use contract')
+      console.log('invalid contract')
     }
   })
 
