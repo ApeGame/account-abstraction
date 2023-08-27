@@ -74,6 +74,15 @@ const config: HardhatUserConfig = {
         process.env.PRIVATE_KEY_TEST !== undefined
           ? [process.env.PRIVATE_KEY_TEST]
           : []
+    },
+    lineagoerli: {
+      url: 'https://rpc.goerli.linea.build/',
+      chainId: 59140,
+      gasPrice: 1500000001,
+      accounts:
+        process.env.PRIVATE_KEY_TEST !== undefined
+          ? [process.env.PRIVATE_KEY_TEST]
+          : []
     }
   },
   mocha: {
@@ -81,7 +90,9 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      coq: 'QADPA8U7I9EU4K1I672Y9QHRAY7PFJ5WAX'
+      coq: 'QADPA8U7I9EU4K1I672Y9QHRAY7PFJ5WAX',
+      basegoerli: '3WGNMRP6F45GDZVQDGEI3DWQDSP4YDJ9JU',
+      lineagoerli: 'HCHMNPUTKD1AJYSNJXKRPADCN6B9E7BSWE'
     },
     customChains: [
       {
@@ -90,6 +101,22 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: 'https://testnetscan.ankr.com/api',
           browserURL: 'https://testnetscan.ankr.com/'
+        }
+      },
+      {
+        network: 'basegoerli',
+        chainId: 84531,
+        urls: {
+          apiURL: 'https://api-goerli.basescan.org/api',
+          browserURL: 'https://goerli.basescan.org/'
+        }
+      },
+      {
+        network: 'lineagoerli',
+        chainId: 59140,
+        urls: {
+          apiURL: 'https://api-testnet.lineascan.build/api',
+          browserURL: 'https://goerli.lineascan.build/'
         }
       }
     ]

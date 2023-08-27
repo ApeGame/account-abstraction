@@ -150,16 +150,16 @@ async function deployToken (hre: HardhatRuntimeEnvironment): Promise<string> {
   const mytoken = await MyToken.deploy('my token', 'MT')
   const token = await mytoken.getAddress()
 
-  if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
-    await Sleep(sleepTime)
-    await hre.run('verify:verify', {
-      address: token,
-      constructorArguments: [
-        'my token', 'MT'
-      ],
-      contract: 'contracts/mock/erc20.sol:MyToken'
-    })
-  }
+  // if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
+  //   await Sleep(sleepTime)
+  //   await hre.run('verify:verify', {
+  //     address: token,
+  //     constructorArguments: [
+  //       'my token', 'MT'
+  //     ],
+  //     contract: 'contracts/mock/erc20.sol:MyToken'
+  //   })
+  // }
   return token
 }
 
@@ -182,22 +182,22 @@ async function deployEntrypoint (hre: HardhatRuntimeEnvironment): Promise<string
   )
   const entryPointProxyAddr = await entryPointProxy.getAddress()
 
-  if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
-    await Sleep(sleepTime)
+  // if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
+  //   await Sleep(sleepTime)
 
-    await hre.run('verify:verify', {
-      address: senderCreatorAddress,
-      constructorArguments: [],
-      contract: 'contracts/core/SenderCreator.sol:SenderCreator'
-    })
+  //   await hre.run('verify:verify', {
+  //     address: senderCreatorAddress,
+  //     constructorArguments: [],
+  //     contract: 'contracts/core/SenderCreator.sol:SenderCreator'
+  //   })
 
-    const entrypoinyImpl = await upgrades.erc1967.getImplementationAddress(entryPointProxyAddr)
-    await hre.run('verify:verify', {
-      address: entrypoinyImpl,
-      constructorArguments: [],
-      contract: 'contracts/core/EntryPoint.sol:EntryPoint'
-    })
-  }
+  //   const entrypoinyImpl = await upgrades.erc1967.getImplementationAddress(entryPointProxyAddr)
+  //   await hre.run('verify:verify', {
+  //     address: entrypoinyImpl,
+  //     constructorArguments: [],
+  //     contract: 'contracts/core/EntryPoint.sol:EntryPoint'
+  //   })
+  // }
   return entryPointProxyAddr
 }
 
@@ -218,23 +218,23 @@ async function deployAccountFactory (hre: HardhatRuntimeEnvironment, entrypoint:
     }
   )
   const simpleAccountFactoryProxyAddr = await simpleAccountFactoryProxy.getAddress()
-  if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
-    await Sleep(sleepTime)
-    await hre.run('verify:verify', {
-      address: simpleAccountAddress,
-      constructorArguments: [
-        entrypoint
-      ],
-      contract: 'contracts/samples/SimpleAccount.sol:SimpleAccount'
-    })
+  // if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
+  //   await Sleep(sleepTime)
+  //   await hre.run('verify:verify', {
+  //     address: simpleAccountAddress,
+  //     constructorArguments: [
+  //       entrypoint
+  //     ],
+  //     contract: 'contracts/samples/SimpleAccount.sol:SimpleAccount'
+  //   })
 
-    const simpleAccountFactoryImpl = await upgrades.erc1967.getImplementationAddress(simpleAccountFactoryProxyAddr)
-    await hre.run('verify:verify', {
-      address: simpleAccountFactoryImpl,
-      constructorArguments: [],
-      contract: 'contracts/samples/SimpleAccountFactory.sol:SimpleAccountFactory'
-    })
-  }
+  //   const simpleAccountFactoryImpl = await upgrades.erc1967.getImplementationAddress(simpleAccountFactoryProxyAddr)
+  //   await hre.run('verify:verify', {
+  //     address: simpleAccountFactoryImpl,
+  //     constructorArguments: [],
+  //     contract: 'contracts/samples/SimpleAccountFactory.sol:SimpleAccountFactory'
+  //   })
+  // }
 
   return simpleAccountFactoryProxyAddr
 }
@@ -252,15 +252,15 @@ async function deployTokenPaymaster (hre: HardhatRuntimeEnvironment, entrypoint:
     }
   )
   const simpleTokenPaymasterProxyAddr = await simpleTokenPaymaster.getAddress()
-  if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
-    await Sleep(sleepTime)
-    const simpleTokenPaymasterImpl = await upgrades.erc1967.getImplementationAddress(simpleTokenPaymasterProxyAddr)
-    await hre.run('verify:verify', {
-      address: simpleTokenPaymasterImpl,
-      constructorArguments: [],
-      contract: 'contracts/samples/paymaster/SimpleTokenPaymaster.sol:SimpleTokenPaymaster'
-    })
-  }
+  // if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
+  //   await Sleep(sleepTime)
+  //   const simpleTokenPaymasterImpl = await upgrades.erc1967.getImplementationAddress(simpleTokenPaymasterProxyAddr)
+  //   await hre.run('verify:verify', {
+  //     address: simpleTokenPaymasterImpl,
+  //     constructorArguments: [],
+  //     contract: 'contracts/samples/paymaster/SimpleTokenPaymaster.sol:SimpleTokenPaymaster'
+  //   })
+  // }
   return simpleTokenPaymasterProxyAddr
 }
 
@@ -293,35 +293,35 @@ async function deployGnosisSafeProxyFactory (hre: HardhatRuntimeEnvironment, ent
   )
   const gnosisSafeAccountFactoryProxyAddress = await gnosisSafeAccountFactoryProxy.getAddress()
 
-  if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
-    await Sleep(sleepTime)
-    await hre.run('verify:verify', {
-      address: gnosisSafeProxyAddress,
-      constructorArguments: [],
-      contract: 'lib/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol:GnosisSafeProxyFactory'
-    })
+  // if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
+  //   await Sleep(sleepTime)
+  //   await hre.run('verify:verify', {
+  //     address: gnosisSafeProxyAddress,
+  //     constructorArguments: [],
+  //     contract: 'lib/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol:GnosisSafeProxyFactory'
+  //   })
 
-    await hre.run('verify:verify', {
-      address: gnosisSafeAddress,
-      constructorArguments: [],
-      contract: 'lib/@gnosis.pm/safe-contracts/contracts/GnosisSafeL2.sol:GnosisSafeL2'
-    })
+  //   await hre.run('verify:verify', {
+  //     address: gnosisSafeAddress,
+  //     constructorArguments: [],
+  //     contract: 'lib/@gnosis.pm/safe-contracts/contracts/GnosisSafeL2.sol:GnosisSafeL2'
+  //   })
 
-    await hre.run('verify:verify', {
-      address: eip4337MgrAddress,
-      constructorArguments: [
-        gnosisSafeProxyAddress
-      ],
-      contract: 'contracts/samples/gnosis/EIP4337Manager.sol:EIP4337Manager'
-    })
+  //   await hre.run('verify:verify', {
+  //     address: eip4337MgrAddress,
+  //     constructorArguments: [
+  //       entrypoint
+  //     ],
+  //     contract: 'contracts/samples/gnosis/EIP4337Manager.sol:EIP4337Manager'
+  //   })
 
-    const impl = await upgrades.erc1967.getImplementationAddress(gnosisSafeAccountFactoryProxyAddress)
-    await hre.run('verify:verify', {
-      address: impl,
-      constructorArguments: [],
-      contract: 'contracts/samples/gnosis/GnosisAccountFactory.sol:GnosisSafeAccountFactory'
-    })
-  }
+  //   const impl = await upgrades.erc1967.getImplementationAddress(gnosisSafeAccountFactoryProxyAddress)
+  //   await hre.run('verify:verify', {
+  //     address: impl,
+  //     constructorArguments: [],
+  //     contract: 'contracts/samples/gnosis/GnosisAccountFactory.sol:GnosisSafeAccountFactory'
+  //   })
+  // }
   return gnosisSafeAccountFactoryProxyAddress
 }
 
@@ -338,16 +338,15 @@ async function deploySubsidyPaymaster (hre: HardhatRuntimeEnvironment, entrypoin
     }
   )
   const subsidyPaymasterAddr = await subsidyPaymaster.getAddress()
-  // console.log(`subsidy paymaster      : ${subsidyPaymasterAddr}`)
-  if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
-    await Sleep(sleepTime)
-    const subsidyPaymasterImpl = await upgrades.erc1967.getImplementationAddress(subsidyPaymasterAddr)
-    await hre.run('verify:verify', {
-      address: subsidyPaymasterImpl,
-      constructorArguments: [],
-      contract: 'contracts/samples/paymaster/SubsidyPaymaster.sol:SubsidyPaymaster'
-    })
-  }
+  // if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
+  //   await Sleep(sleepTime)
+  //   const subsidyPaymasterImpl = await upgrades.erc1967.getImplementationAddress(subsidyPaymasterAddr)
+  //   await hre.run('verify:verify', {
+  //     address: subsidyPaymasterImpl,
+  //     constructorArguments: [],
+  //     contract: 'contracts/samples/paymaster/SubsidyPaymaster.sol:SubsidyPaymaster'
+  //   })
+  // }
   return subsidyPaymasterAddr
 }
 
@@ -357,14 +356,14 @@ async function deployMultiSendCallOnly (hre: HardhatRuntimeEnvironment): Promise
   const multiSendCallOnly = await MultiSendCallOnly.deploy()
   const multiSendCallOnlyAddr = await multiSendCallOnly.getAddress()
   // console.log(`subsidy paymaster      : ${subsidyPaymasterAddr}`)
-  if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
-    await Sleep(sleepTime)
+  // if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
+  //   await Sleep(sleepTime)
 
-    await hre.run('verify:verify', {
-      address: multiSendCallOnlyAddr,
-      constructorArguments: [],
-      contract: 'contracts/samples/gnosis/MultiSendCallOnly.sol:MultiSendCallOnly'
-    })
-  }
+  //   await hre.run('verify:verify', {
+  //     address: multiSendCallOnlyAddr,
+  //     constructorArguments: [],
+  //     contract: 'contracts/samples/gnosis/MultiSendCallOnly.sol:MultiSendCallOnly'
+  //   })
+  // }
   return multiSendCallOnlyAddr
 }
