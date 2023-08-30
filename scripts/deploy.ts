@@ -3,9 +3,7 @@ import { types, task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 // import { EntryPoint } from './../typechain/contracts/core/EntryPoint'
 // import { GnosisSafe } from './../typechain/@gnosis.pm/safe-contracts/contracts/GnosisSafe'
-import { Sleep } from './common'
 
-const sleepTime = 6000 // 6s
 // hardhat deploy --network coq --contract entrypoint
 // hardhat deploy --network coq --contract all --token 0x13D91374CcB046ca0B66688AdCe4B2B62837A86a --pubkey 0xe184aF3b0b9CeFf9C2d11B1D33FF31Cc483C13F2 --fee 0.01
 // hardhat deploy --network coq --contract accountfactory --entrypoint 0x83DA221A7D6D96357794eC749a658811997Ee039
@@ -19,7 +17,7 @@ task('deploy', 'deploy contract')
   .addParam('entrypoint', "the entrypoint's address", '', types.string)
   .addParam('pubkey', 'public key (tokenpaymster & subsidypaymaster need it)', '', types.string)
   .addParam('fee', 'fee of tokenpaymster (only tokenpaymster)', '', types.string)
-  .addParam('contract', 'Which contract is deployed? (all|entrypoint|accountfactory|tokenpaymster|gnosisfactory|multisendcallonly|subsidypaymaster)')
+  .addParam('contract', 'Which contract is deployed? (all|entrypoint|accountfactory|tokenpaymster|gnosisfactory|multisendcallonly|subsidypaymaster|token)')
   .setAction(async (taskArgs, hre) => {
     let token = taskArgs.token
     let entrypoint: string = taskArgs.entrypoint
@@ -139,6 +137,12 @@ task('deploy', 'deploy contract')
       console.log('------------------- deployed contract -------------------')
       console.log('')
       console.log(`subsidy paymaster      : ${subsidypaymaster}`)
+    } else if (contract === 'token') {
+      const token = await deployToken(hre)
+      console.log('')
+      console.log('------------------- deployed contract -------------------')
+      console.log('')
+      console.log('erc20 token            :', token)
     } else {
       console.log('invalid contract')
     }

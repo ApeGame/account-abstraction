@@ -7,6 +7,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 
 task('verify-contract', 'verify contract')
   .addParam('sendercreator', 'sender creator', '', types.string)
+  .addParam('token', 'erc20 token', '', types.string)
   .addParam('entrypoint', "the entrypoint's address", '', types.string)
   .addParam('simpleaccountfactory', 'simple account factory', '', types.string)
   .addParam('tokenpaymaster', 'simple token paymster', '', types.string)
@@ -15,6 +16,7 @@ task('verify-contract', 'verify contract')
   .addParam('multisendcallonly', 'multisend call only', '', types.string)
   .setAction(async (taskArgs, hre) => {
     const entrypoint: string = taskArgs.entrypoint
+    const token: string = taskArgs.token
     const sendercreator: string = taskArgs.sendercreator
     const simpleAccountFactory: string = taskArgs.simpleaccountfactory
     const tokenPaymaster: string = taskArgs.tokenpaymaster
@@ -22,6 +24,7 @@ task('verify-contract', 'verify contract')
     const subsidyPaymaster: string = taskArgs.subsidypaymaster
     const multisendCallOnly: string = taskArgs.multisendcallonly
 
+    await verifyToken(hre, token)
     if (!hre.ethers.isAddress(entrypoint)) {
       console.log('invalid entrypoint')
       return ''
@@ -34,6 +37,21 @@ task('verify-contract', 'verify contract')
     await verifySubsidyPaymaster(hre, subsidyPaymaster)
     await verifyMultiSendCallOnly(hre, multisendCallOnly)
   })
+
+async function verifyToken (hre: HardhatRuntimeEnvironment, token: string): Promise<boolean> {
+  if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
+    if (hre.ethers.isAddress(token)) {
+      await hre.run('verify:verify', {
+        address: token,
+        constructorArguments: [
+          'my token', 'MT'
+        ],
+        contract: 'contracts/mock/erc20.sol:MyToken'
+      })
+    }
+  }
+  return true
+}
 
 async function verifyEntrypoint (hre: HardhatRuntimeEnvironment, senderCreatorAddr: string, entrypointAddr: string): Promise<boolean> {
   if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {

@@ -6,10 +6,10 @@ import { EntryPoint } from '../typechain'
 import { init } from '@thehubbleproject/bls/dist/mcl'
 import { parseEther, Wallet, keccak256, concat, toUtf8Bytes } from 'ethers'
 
-const entrypoint = '0x8cF967130177Bf832Bea258c3aF2a99Ada700436'
-const accountFactory = '0x5c8bB1c508652009bcd6C768228bA245D43F2e5f'
-const token = '0x13D91374CcB046ca0B66688AdCe4B2B62837A86a'
-const tokenPaymaster = '0x002e39B2ea5e4B1e5C6Bf251577BAa2F31FAE217'
+const entrypoint = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9'
+const accountFactory = '0x0165878A594ca255338adfa4d48449f69242Eb8F'
+const token = '0x7ef8E99980Da5bcEDcF7C10f41E55f759F6A174B'
+const tokenPaymaster = '0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6'
 const salt = '0x1fc44be88bb5b18430b5cafae006984102b4a3ac9887b7db77c54503a5fcd23d'
 const ownerPrivateKey = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80' // 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
@@ -67,7 +67,7 @@ async function main () {
   await mytoken.mintTo(sender, parseEther('100'))
 
   // deposit token to aa
-  await EntryPoint.depositTo(tokenPaymaster, { value: parseEther('5') })
+  await EntryPoint.depositTo(tokenPaymaster, { value: parseEther('0.05') })
 
   // send 100 mt to aa
   await mytoken.mintTo(tokenPaymaster, parseEther('100'))

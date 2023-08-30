@@ -109,7 +109,8 @@ contract SimpleTokenPaymaster is BasePaymaster, Verify {
                 "TPM: Invlida Signature"
             );
 
-            uint256 tokenAmount = weiToToken(_requiredPreFund, price_);
+            uint256 tokenAmount = weiToToken(_requiredPreFund, price_) +
+                fixedFee;
             if (prepay_) {
                 require(
                     token.balanceOf(_userOp.sender) >= tokenAmount,

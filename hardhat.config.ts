@@ -83,6 +83,33 @@ const config: HardhatUserConfig = {
         process.env.PRIVATE_KEY_TEST !== undefined
           ? [process.env.PRIVATE_KEY_TEST]
           : []
+    },
+    coqdeployer: {
+      url: 'https://shanghai-inner-rpc.ankr.com/all/coq_testnet/rpc',
+      chainId: 12077,
+      gasPrice: 1000000000,
+      accounts:
+        process.env.PRIVATE_KEY_TEST_DEPLOYER !== undefined
+          ? [process.env.PRIVATE_KEY_TEST_DEPLOYER]
+          : []
+    },
+    basegoerlideployer: {
+      url: 'https://goerli.base.org',
+      chainId: 84531,
+      gasPrice: 150000001,
+      accounts:
+        process.env.PRIVATE_KEY_TEST_DEPLOYER !== undefined
+          ? [process.env.PRIVATE_KEY_TEST_DEPLOYER]
+          : []
+    },
+    lineagoerlideployer: {
+      url: 'https://rpc.goerli.linea.build/',
+      chainId: 59140,
+      gasPrice: 1500000001,
+      accounts:
+        process.env.PRIVATE_KEY_TEST_DEPLOYER !== undefined
+          ? [process.env.PRIVATE_KEY_TEST_DEPLOYER]
+          : []
     }
   },
   mocha: {

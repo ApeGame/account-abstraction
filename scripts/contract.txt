@@ -24,3 +24,28 @@ basegoerli:
     gnosis factory         : 0x3e5c05A96a3fDE3bF58DFE2A6eEa11137a74DaA8
     subsidy paymaster      : 0xE45469233597318F51656B401DD561D9306ED2Fd
     multisend call only    : 0x6e5091C7f6b5c269Ce57DB31746C1FD2D96fB260
+
+
+
+
+------------------------ new -----------------------
+
+deployer               : 0x5361AE9525a9A84fc04e99b2EEAE8a21E177FbB6 (deploy-new)
+
+-------------
+
+coq & linea & base: 
+
+    proxy admin            : 0xa616E47D3B3143F3054aF0fB15b3bbdAc02f5374
+    ---------------------------------------------------------
+    entrypoint address     : 0x7CccBBC49920113AA5D5295f509183D20A35b0A7
+    simple account factory : 0xF70e85D16E68180975C849348C9979537D612a3b
+    simple token paymaster : 0x8902a7FaEf545F8cCB869621aa874bfEb0a08dBd
+    gnosis factory         : 0x50cD8fCDE8bbbF24b4591A6a064Fff21855C54bE
+    subsidy paymaster      : 0x134162925dDFc67ccdD0eAe50E705545778A7b2C
+    multisend call only    : 0xDEE4303741cBEF7B07d66933CbF9EFE2b3345Ff2
+
+mock erc20: 
+    coq   : 0x13D91374CcB046ca0B66688AdCe4B2B62837A86a
+    linea : 0xE45469233597318F51656B401DD561D9306ED2Fd
+    base  : 0x77E825be7701Fe49D4b825304C77B3754f80D54d
