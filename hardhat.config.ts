@@ -84,7 +84,7 @@ const config: HardhatUserConfig = {
           ? [process.env.PRIVATE_KEY_TEST]
           : []
     },
-    coqdeployer: {
+    coqdeploy: {
       url: 'https://shanghai-inner-rpc.ankr.com/all/coq_testnet/rpc',
       chainId: 12077,
       gasPrice: 1000000000,
@@ -93,7 +93,7 @@ const config: HardhatUserConfig = {
           ? [process.env.PRIVATE_KEY_TEST_DEPLOYER]
           : []
     },
-    basegoerlideployer: {
+    basegoerlideploy: {
       url: 'https://goerli.base.org',
       chainId: 84531,
       gasPrice: 150000001,
@@ -102,13 +102,33 @@ const config: HardhatUserConfig = {
           ? [process.env.PRIVATE_KEY_TEST_DEPLOYER]
           : []
     },
-    lineagoerlideployer: {
+    lineagoerlideploy: {
       url: 'https://rpc.goerli.linea.build/',
       chainId: 59140,
       gasPrice: 1500000001,
       accounts:
         process.env.PRIVATE_KEY_TEST_DEPLOYER !== undefined
           ? [process.env.PRIVATE_KEY_TEST_DEPLOYER]
+          : []
+    },
+    basemaindeploy: {
+      url: 'https://developer-access-mainnet.base.org',
+      // url: 'http://127.0.0.1:8545',
+      chainId: 8453,
+      gasPrice: 130000001,
+      accounts:
+        process.env.PRIVATE_KEY_DEPLOYER !== undefined
+          ? [process.env.PRIVATE_KEY_DEPLOYER]
+          : []
+    },
+    lineamaindeploy: {
+      url: 'https://shanghai-inner-rpc.ankr.com/all/linea_mainnet/rpc',
+      // url: 'http://127.0.0.1:8545',
+      chainId: 59144,
+      gasPrice: 1015000000,
+      accounts:
+        process.env.PRIVATE_KEY_DEPLOYER !== undefined
+          ? [process.env.PRIVATE_KEY_DEPLOYER]
           : []
     }
   },
@@ -119,7 +139,9 @@ const config: HardhatUserConfig = {
     apiKey: {
       coq: 'QADPA8U7I9EU4K1I672Y9QHRAY7PFJ5WAX',
       basegoerli: '3WGNMRP6F45GDZVQDGEI3DWQDSP4YDJ9JU',
-      lineagoerli: 'HCHMNPUTKD1AJYSNJXKRPADCN6B9E7BSWE'
+      lineagoerli: 'HCHMNPUTKD1AJYSNJXKRPADCN6B9E7BSWE',
+      basemaindeploy: '3WGNMRP6F45GDZVQDGEI3DWQDSP4YDJ9JU',
+      lineamaindeploy: 'HCHMNPUTKD1AJYSNJXKRPADCN6B9E7BSWE'
     },
     customChains: [
       {
@@ -144,6 +166,22 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: 'https://api-testnet.lineascan.build/api',
           browserURL: 'https://goerli.lineascan.build/'
+        }
+      },
+      {
+        network: 'basemaindeploy',
+        chainId: 8453,
+        urls: {
+          apiURL: 'https://api.basescan.org/api',
+          browserURL: 'https://basescan.org/'
+        }
+      },
+      {
+        network: 'lineamaindeploy',
+        chainId: 59144,
+        urls: {
+          apiURL: 'https://api.lineascan.build/api',
+          browserURL: 'https://lineascan.build/'
         }
       }
     ]

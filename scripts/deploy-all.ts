@@ -3,9 +3,12 @@ import TransparentUpgradeableProxy from '@openzeppelin/upgrades-core/artifacts/@
 import ProxyAdmin from '@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol/ProxyAdmin.json'
 // hardhat deploy-all --network dev --token 0x13D91374CcB046ca0B66688AdCe4B2B62837A86a --pubkey 0xe184aF3b0b9CeFf9C2d11B1D33FF31Cc483C13F2 --fee 0.01
 
-// hardhat deploy-all --network coqdeployer --token 0x13D91374CcB046ca0B66688AdCe4B2B62837A86a --pubkey 0xe184aF3b0b9CeFf9C2d11B1D33FF31Cc483C13F2 --fee 0.01
-// hardhat deploy-all --network basegoerlideployer --token 0x77E825be7701Fe49D4b825304C77B3754f80D54d --pubkey 0xe184aF3b0b9CeFf9C2d11B1D33FF31Cc483C13F2 --fee 0.1
-// hardhat deploy-all --network lineagoerlideployer --token 0xE45469233597318F51656B401DD561D9306ED2Fd --pubkey 0xe184aF3b0b9CeFf9C2d11B1D33FF31Cc483C13F2 --fee 0.1
+// hardhat deploy-all --network coqdeploy --token 0x13D91374CcB046ca0B66688AdCe4B2B62837A86a --pubkey 0xe184aF3b0b9CeFf9C2d11B1D33FF31Cc483C13F2 --fee 0.01
+// hardhat deploy-all --network basegoerlideploy --token 0x77E825be7701Fe49D4b825304C77B3754f80D54d --pubkey 0xe184aF3b0b9CeFf9C2d11B1D33FF31Cc483C13F2 --fee 0.1
+// hardhat deploy-all --network lineagoerlideploy --token 0xE45469233597318F51656B401DD561D9306ED2Fd --pubkey 0xe184aF3b0b9CeFf9C2d11B1D33FF31Cc483C13F2 --fee 0.1
+
+// hardhat deploy-all --network lineamaindeploy --token 0x76cfA539706215B3296De65a701dfb69E000F85E --pubkey  --fee 0.1
+// hardhat deploy-all --network basemaindeploy --token 0xedb6Cd6D456Cd3C07F414208C8C0015b17744141 --pubkey  --fee 0.1
 
 task('deploy-all', 'deploy all contract')
   .addParam('token', 'erc20 contract (dev network will create it when it is undefined)', '', types.string)
