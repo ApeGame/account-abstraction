@@ -151,7 +151,7 @@ task('deploy', 'deploy contract')
 async function deployToken (hre: HardhatRuntimeEnvironment): Promise<string> {
   const ethers = hre.ethers
   const MyToken = await ethers.getContractFactory('MyToken')
-  const mytoken = await MyToken.deploy('my token', 'MT')
+  const mytoken = await MyToken.deploy('happy token', 'HT')
   const token = await mytoken.getAddress()
 
   // if (hre.config.etherscan.apiKey[hre.network.name] !== undefined) {
