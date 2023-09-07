@@ -125,7 +125,7 @@ const config: HardhatUserConfig = {
       url: 'https://shanghai-inner-rpc.ankr.com/all/linea_mainnet/rpc',
       // url: 'http://127.0.0.1:8545',
       chainId: 59144,
-      gasPrice: 1015000000,
+      gasPrice: 815000000,
       accounts:
         process.env.PRIVATE_KEY_DEPLOYER !== undefined
           ? [process.env.PRIVATE_KEY_DEPLOYER]
