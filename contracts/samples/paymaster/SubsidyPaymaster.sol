@@ -9,8 +9,9 @@ import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import "contracts/core/EntryPoint.sol";
 import "contracts/samples/paymaster/BasePaymaster.sol";
 import "../utils/Verify.sol";
+import "../utils/Admin.sol";
 
-contract SubsidyPaymaster is BasePaymaster, Verify {
+contract SubsidyPaymaster is BasePaymaster, Verify, Admin {
     /// maps paymaster to their deposits and stakes
     mapping(address => uint256) public deposits;
 
@@ -41,7 +42,7 @@ contract SubsidyPaymaster is BasePaymaster, Verify {
         _setPublicKey(_pubkey);
     }
 
-    function setPublicKey(address _pubkey) external onlyOwner {
+    function setPublicKey(address _pubkey) external onlyAdmin {
         _setPublicKey(_pubkey);
     }
 
@@ -172,6 +173,7 @@ contract SubsidyPaymaster is BasePaymaster, Verify {
     function depositTo(address _account) public payable {
         deposits[_account] += msg.value;
         emit Deposited(_account, msg.value);
+        entryPoint.depositTo{value: msg.value}(address(this));
     }
 
     function balanceOf(address _account) external view returns (uint256) {
@@ -191,8 +193,7 @@ contract SubsidyPaymaster is BasePaymaster, Verify {
         require(balance_ >= _withdrawAmount, "Withdraw amount too large");
         deposits[msg.sender] = balance_ - _withdrawAmount;
         emit Withdrawn(msg.sender, _withdrawAddress, _withdrawAmount);
-        (bool success, ) = _withdrawAddress.call{value: _withdrawAmount}("");
-        require(success, "Failed to withdraw");
+        entryPoint.withdrawTo(payable(_withdrawAddress), _withdrawAmount);
     }
 
     receive() external payable {

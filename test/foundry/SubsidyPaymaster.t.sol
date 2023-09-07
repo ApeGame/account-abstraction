@@ -10,25 +10,32 @@ import "contracts/interfaces/IEntryPoint.sol";
 
 contract SubsidyPaymasterTest is Test {
     MyToken mt;
+    EntryPoint entrypoint;
     SubsidyPaymaster subsidyPaymaster;
 
     uint256 publicKeyPrivateKey = 0xA0A;
     uint256 ownerPrivate = 0xB0B;
+    uint256 adminPrivate = 0xC0C;
 
     address publicKey = vm.addr(publicKeyPrivateKey);
     address owner = vm.addr(ownerPrivate);
+    address admin = vm.addr(adminPrivate);
 
     function setUp() public {
         mt = new MyToken("aaa", "a");
 
+        // deploy sender creator
+        SenderCreator senderCreator = new SenderCreator();
+
+        // deploy entrypoint
+        entrypoint = new EntryPoint();
+        entrypoint.initialize(senderCreator);
+
         subsidyPaymaster = new SubsidyPaymaster();
-        subsidyPaymaster.initialize(
-            IEntryPoint(address(this)),
-            owner,
-            publicKey
-        );
+        subsidyPaymaster.initialize(IEntryPoint(entrypoint), owner, publicKey);
         vm.warp(1670496243);
         vm.deal(address(subsidyPaymaster), 10 ether);
+        vm.deal(address(entrypoint), 10 ether);
     }
 
     function testValidatePaymasterUserOp() public {
@@ -47,6 +54,8 @@ contract SubsidyPaymasterTest is Test {
             paymasterAndData: abi.encodePacked(address(subsidyPaymaster)),
             signature: abi.encode("")
         });
+
+        vm.startPrank(address(entrypoint));
 
         vm.expectRevert("TPM: invalid data length");
         subsidyPaymaster.validatePaymasterUserOp(
@@ -69,6 +78,7 @@ contract SubsidyPaymasterTest is Test {
             bytes32(uint256(0)),
             1200000 * 1 gwei
         );
+        vm.stopPrank();
 
         vm.prank(publicKey);
         vm.expectRevert("Sender not EntryPoint");
@@ -78,6 +88,7 @@ contract SubsidyPaymasterTest is Test {
             1200000 * 1 gwei
         );
 
+        vm.startPrank(address(entrypoint));
         op.paymasterAndData = abi.encodePacked(
             address(subsidyPaymaster),
             abi.encode(
@@ -130,9 +141,11 @@ contract SubsidyPaymasterTest is Test {
             subsidyPaymaster.balanceOf(op.sender) ==
                 1 ether - (1200000 * 1 gwei * 2)
         );
+        vm.stopPrank();
     }
 
     function testPostOp() public {
+        vm.startPrank(address(entrypoint));
         subsidyPaymaster.postOp(
             IPaymaster.PostOpMode.opSucceeded,
             abi.encode(10000, 1200000 * 1 gwei, owner),
@@ -159,6 +172,41 @@ contract SubsidyPaymasterTest is Test {
             abi.encode(5000, 0, owner),
             1300000 * 1 gwei
         );
+        vm.stopPrank();
+    }
+
+    function testWithdrawFromDeposit() public {
+        (bool success_, ) = address(subsidyPaymaster).call{value: 1 ether}("");
+        require(success_);
+        require(address(subsidyPaymaster).balance == 10 ether);
+        require(address(entrypoint).balance == 11 ether);
+        console.log(address(subsidyPaymaster).balance);
+        console.log(address(entrypoint).balance);
+        require(subsidyPaymaster.balanceOf(address(this)) == 1 ether);
+
+        subsidyPaymaster.withdrawFromDeposit(owner, 1 ether);
+        require(address(entrypoint).balance == 10 ether);
+        require(subsidyPaymaster.balanceOf(address(this)) == 0 ether);
+    }
+
+    function testCheckAdmin() public {
+        vm.expectRevert("Admin: caller is not the admin");
+        subsidyPaymaster.setPublicKey(publicKey);
+        vm.prank(owner);
+        subsidyPaymaster.setPublicKey(publicKey);
+
+        vm.prank(admin);
+        vm.expectRevert("Admin: caller is not the admin");
+        subsidyPaymaster.setPublicKey(publicKey);
+
+        vm.expectRevert("Ownable: caller is not the owner");
+        subsidyPaymaster.setAdmin(admin, true);
+
+        vm.prank(owner);
+        subsidyPaymaster.setAdmin(admin, true);
+
+        vm.prank(admin);
+        subsidyPaymaster.setPublicKey(publicKey);
     }
 
     function generateSig(

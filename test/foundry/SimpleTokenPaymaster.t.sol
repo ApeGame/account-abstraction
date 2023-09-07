@@ -11,20 +11,30 @@ import "contracts/interfaces/IEntryPoint.sol";
 
 contract SimpleTokenPaymasterTest is Test {
     MyToken mt;
+    EntryPoint entrypoint;
     SimpleTokenPaymaster simpleTokenPaymaster;
 
     uint256 publicKeyPrivateKey = 0xA0A;
     uint256 ownerPrivate = 0xB0B;
+    uint256 adminPrivate = 0xC0C;
 
     address publicKey = vm.addr(publicKeyPrivateKey);
     address owner = vm.addr(ownerPrivate);
+    address admin = vm.addr(adminPrivate);
 
     function setUp() public {
         mt = new MyToken("aaa", "a");
 
+        // deploy sender creator
+        SenderCreator senderCreator = new SenderCreator();
+
+        // deploy entrypoint
+        entrypoint = new EntryPoint();
+        entrypoint.initialize(senderCreator);
+
         simpleTokenPaymaster = new SimpleTokenPaymaster();
         simpleTokenPaymaster.initialize(
-            IEntryPoint(address(this)),
+            IEntryPoint(address(entrypoint)),
             IERC20(mt),
             owner,
             publicKey,
@@ -59,6 +69,7 @@ contract SimpleTokenPaymasterTest is Test {
             signature: abi.encode("")
         });
 
+        vm.startPrank(address(entrypoint));
         vm.expectRevert("TPM: invalid data length");
         simpleTokenPaymaster.validatePaymasterUserOp(
             op,
@@ -81,6 +92,7 @@ contract SimpleTokenPaymasterTest is Test {
             bytes32(uint256(0)),
             1200000 * 1 gwei
         );
+        vm.stopPrank();
 
         vm.prank(publicKey);
         vm.expectRevert("Sender not EntryPoint");
@@ -90,6 +102,7 @@ contract SimpleTokenPaymasterTest is Test {
             1200000 * 1 gwei
         );
 
+        vm.startPrank(address(entrypoint));
         op.paymasterAndData = abi.encodePacked(
             address(simpleTokenPaymaster),
             abi.encode(
@@ -123,11 +136,13 @@ contract SimpleTokenPaymasterTest is Test {
             1200000 * 1 gwei
         );
         console.log(mt.balanceOf(op.sender));
+        vm.stopPrank();
     }
 
     function testPostOp() public {
         uint256 price_ = 0.01 ether;
 
+        vm.prank(address(entrypoint));
         simpleTokenPaymaster.postOp(
             IPaymaster.PostOpMode.opSucceeded,
             abi.encode(1 ether, false, price_, owner),
@@ -139,11 +154,64 @@ contract SimpleTokenPaymasterTest is Test {
 
         vm.prank(owner);
         mt.approve(address(simpleTokenPaymaster), 100 ether);
+
+        vm.prank(address(entrypoint));
         simpleTokenPaymaster.postOp(
             IPaymaster.PostOpMode.opSucceeded,
             abi.encode(1 ether, true, price_, owner),
             0.1 ether
         );
+    }
+
+    function testTransfer() public {
+        (bool success_, ) = address(simpleTokenPaymaster).call{value: 1 ether}(
+            ""
+        );
+        require(success_);
+        require(address(simpleTokenPaymaster).balance == 0 ether);
+        require(address(entrypoint).balance == 1 ether);
+        (uint112 balance, , , , ) = entrypoint.deposits(
+            address(simpleTokenPaymaster)
+        );
+        require(balance == 1 ether);
+    }
+
+    function testCheckAdmin() public {
+        vm.expectRevert("Admin: caller is not the admin");
+        simpleTokenPaymaster.setPublicKey(publicKey);
+        vm.prank(owner);
+        simpleTokenPaymaster.setPublicKey(publicKey);
+
+        vm.prank(admin);
+        vm.expectRevert("Admin: caller is not the admin");
+        simpleTokenPaymaster.setPublicKey(publicKey);
+
+        vm.expectRevert("Ownable: caller is not the owner");
+        simpleTokenPaymaster.setAdmin(admin, true);
+
+        vm.prank(owner);
+        simpleTokenPaymaster.setAdmin(admin, true);
+
+        vm.prank(admin);
+        simpleTokenPaymaster.setPublicKey(publicKey);
+
+        vm.expectRevert("Admin: caller is not the admin");
+        simpleTokenPaymaster.setFixedFee(1 ether);
+
+        vm.expectRevert("Admin: caller is not the admin");
+        simpleTokenPaymaster.setToken(IERC20(publicKey));
+
+        vm.expectRevert("Admin: caller is not the admin");
+        simpleTokenPaymaster.withdrawToken(publicKey, 1 ether);
+
+        vm.startPrank(admin);
+        simpleTokenPaymaster.setFixedFee(1 ether);
+        simpleTokenPaymaster.withdrawToken(publicKey, 1 ether);
+        simpleTokenPaymaster.setToken(IERC20(publicKey));
+        require(simpleTokenPaymaster.fixedFee() == 1 ether);
+        require(simpleTokenPaymaster.token() == IERC20(publicKey));
+        require(mt.balanceOf(publicKey) == 1 ether);
+        vm.stopPrank();
     }
 
     // function testVerify() public view {

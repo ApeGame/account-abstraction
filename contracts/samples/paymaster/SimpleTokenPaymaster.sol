@@ -9,8 +9,9 @@ import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import "contracts/core/EntryPoint.sol";
 import "contracts/samples/paymaster/BasePaymaster.sol";
 import "../utils/Verify.sol";
+import "../utils/Admin.sol";
 
-contract SimpleTokenPaymaster is BasePaymaster, Verify {
+contract SimpleTokenPaymaster is BasePaymaster, Verify, Admin {
     event SetFee(uint256 indexed fee);
     event SetToken(address indexed token);
     event Received(address indexed sender, uint256 value);
@@ -44,11 +45,11 @@ contract SimpleTokenPaymaster is BasePaymaster, Verify {
         _setFixedFee(_fee);
     }
 
-    function setPublicKey(address _pubkey) external onlyOwner {
+    function setPublicKey(address _pubkey) external onlyAdmin {
         _setPublicKey(_pubkey);
     }
 
-    function setFixedFee(uint256 _fee) external onlyOwner {
+    function setFixedFee(uint256 _fee) external onlyAdmin {
         _setFixedFee(_fee);
     }
 
@@ -57,7 +58,7 @@ contract SimpleTokenPaymaster is BasePaymaster, Verify {
         emit SetFee(_fee);
     }
 
-    function setToken(IERC20 _token) external onlyOwner {
+    function setToken(IERC20 _token) external onlyAdmin {
         _setToken(_token);
     }
 
@@ -69,7 +70,7 @@ contract SimpleTokenPaymaster is BasePaymaster, Verify {
     /// @notice Allows the contract owner to withdraw a specified amount of tokens from the contract.
     /// @param _to The address to transfer the tokens to.
     /// @param _amount The amount of tokens to transfer.
-    function withdrawToken(address _to, uint256 _amount) external onlyOwner {
+    function withdrawToken(address _to, uint256 _amount) external onlyAdmin {
         SafeERC20.safeTransfer(token, _to, _amount);
     }
 
@@ -233,6 +234,7 @@ contract SimpleTokenPaymaster is BasePaymaster, Verify {
     }
 
     receive() external payable {
+        entryPoint.depositTo{value: msg.value}(address(this));
         emit Received(msg.sender, msg.value);
     }
 }
