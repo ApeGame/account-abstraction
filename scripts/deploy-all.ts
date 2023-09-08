@@ -1,3 +1,4 @@
+import { Sleep } from './common';
 import { types, task } from 'hardhat/config'
 import TransparentUpgradeableProxy from '@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol/TransparentUpgradeableProxy.json'
 import ProxyAdmin from '@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol/ProxyAdmin.json'
@@ -67,6 +68,7 @@ task('deploy-all', 'deploy all contract')
       }
       await proxyFactory.deploy({ nonce: 0, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     // deploy entrypoiny
@@ -79,6 +81,7 @@ task('deploy-all', 'deploy all contract')
       }
       await SenderCreator.deploy({ nonce: 1, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     const EntryPointFactory = await hre.ethers.getContractFactory('EntryPoint')
@@ -90,6 +93,7 @@ task('deploy-all', 'deploy all contract')
       }
       await EntryPointFactory.deploy({ nonce: 2, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     if (nonce === 3) {
@@ -103,6 +107,7 @@ task('deploy-all', 'deploy all contract')
       }
       await TransparentUpgradeableProxyFactory.deploy(entryPointFactoryAddress, proxyAdmin, data, { nonce: 3, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     const entrypoint: string = hre.ethers.getCreateAddress({ from: owner, nonce: 3 })
@@ -117,6 +122,7 @@ task('deploy-all', 'deploy all contract')
       }
       await SimpleAccount.deploy(entrypoint, { nonce: 4, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     const SimpleAccountFactoryFactory = await hre.ethers.getContractFactory('SimpleAccountFactory')
@@ -128,6 +134,7 @@ task('deploy-all', 'deploy all contract')
       }
       await SimpleAccountFactoryFactory.deploy({ nonce: 5, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     if (nonce === 6) {
@@ -141,6 +148,7 @@ task('deploy-all', 'deploy all contract')
       }
       await TransparentUpgradeableProxyFactory.deploy(simpleAccountFactoryAddress, proxyAdmin, data, { nonce: 6, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     // deploy token paymaster
@@ -153,6 +161,7 @@ task('deploy-all', 'deploy all contract')
       }
       await SimpleTokenPaymaster.deploy({ nonce: 7, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     if (nonce === 8) {
@@ -165,6 +174,7 @@ task('deploy-all', 'deploy all contract')
       }
       await TransparentUpgradeableProxyFactory.deploy(simpleTokenPaymasterFactoryAddress, proxyAdmin, data, { nonce: 8, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     // deploy gnosis safe factory
@@ -177,6 +187,7 @@ task('deploy-all', 'deploy all contract')
       }
       await GnosisSafeProxyFactory.deploy({ nonce: 9, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     if (nonce === 10) {
@@ -188,6 +199,7 @@ task('deploy-all', 'deploy all contract')
       }
       await GnosisSafeFactory.deploy({ nonce: 10, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     if (nonce === 11) {
@@ -199,6 +211,7 @@ task('deploy-all', 'deploy all contract')
       }
       await EIP4337ManagerFactory.deploy(entrypoint, { nonce: 11, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     const GnosisSafeAccountFactory = await hre.ethers.getContractFactory('GnosisSafeAccountFactory')
@@ -211,6 +224,7 @@ task('deploy-all', 'deploy all contract')
       }
       await GnosisSafeAccountFactory.deploy({ nonce: 12, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     if (nonce === 13) {
@@ -226,6 +240,7 @@ task('deploy-all', 'deploy all contract')
       }
       await TransparentUpgradeableProxyFactory.deploy(gnosisSafeAccountFactoryAddress, proxyAdmin, data, { nonce: 13, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     // deploy subsidy paymaster
@@ -238,6 +253,7 @@ task('deploy-all', 'deploy all contract')
       }
       await SubsidyPaymaster.deploy({ nonce: 14, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     if (nonce === 15) {
@@ -250,6 +266,7 @@ task('deploy-all', 'deploy all contract')
       }
       await TransparentUpgradeableProxyFactory.deploy(subsidyPaymasterFactroyAddress, proxyAdmin, data, { nonce: 15, gasLimit: gasLimit + BigInt(100000) })
       nonce += 1
+      await Sleep(3000)
     }
 
     if (nonce === 16) {
@@ -260,6 +277,7 @@ task('deploy-all', 'deploy all contract')
         return
       }
       await MultiSendCallOnly.deploy({ nonce: 16, gasLimit: gasLimit + BigInt(100000) })
+      await Sleep(3000)
     }
 
     console.log(`proxy admin            : ${proxyAdmin}`)
