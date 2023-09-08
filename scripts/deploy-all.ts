@@ -1,4 +1,4 @@
-import { Sleep } from './common';
+import { Sleep } from './common'
 import { types, task } from 'hardhat/config'
 import TransparentUpgradeableProxy from '@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol/TransparentUpgradeableProxy.json'
 import ProxyAdmin from '@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol/ProxyAdmin.json'
@@ -40,6 +40,7 @@ task('deploy-all', 'deploy all contract')
       console.log('invalid fee')
       return ''
     }
+    await hre.run('compile', {})
 
     console.log('')
     console.log('------------------- deployed contract -------------------')
