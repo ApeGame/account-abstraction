@@ -112,8 +112,8 @@ const config: HardhatUserConfig = {
           : []
     },
     basemaindeploy: {
-      url: 'https://developer-access-mainnet.base.org',
-      // url: 'http://127.0.0.1:8545',
+      // url: 'https://developer-access-mainnet.base.org',
+      url: 'http://127.0.0.1:8545',
       chainId: 8453,
       gasPrice: 130000001,
       accounts:
@@ -122,8 +122,8 @@ const config: HardhatUserConfig = {
           : []
     },
     lineamaindeploy: {
-      url: 'https://shanghai-inner-rpc.ankr.com/all/linea_mainnet/rpc',
-      // url: 'http://127.0.0.1:8545',
+      // url: 'https://shanghai-inner-rpc.ankr.com/all/linea_mainnet/rpc',
+      url: 'http://127.0.0.1:8545',
       chainId: 59144,
       gasPrice: 815000000,
       accounts:

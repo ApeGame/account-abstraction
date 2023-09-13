@@ -6,10 +6,10 @@ import { EntryPoint } from '../typechain'
 import { init } from '@thehubbleproject/bls/dist/mcl'
 import { parseEther, Wallet, keccak256, concat, toUtf8Bytes } from 'ethers'
 
-const entrypoint = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9'
-const accountFactory = '0x0165878A594ca255338adfa4d48449f69242Eb8F'
-const token = '0x7ef8E99980Da5bcEDcF7C10f41E55f759F6A174B'
-const tokenPaymaster = '0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6'
+const entrypoint = '0xd876ed6aAf728C927770E02672738364d759331f'
+const accountFactory = '0x4435aFc3474e62aB81811d5c19300788a969928b'
+const token = '0xa6eb75b11b36fb9175fb94c5b96959879a26c2a8'
+const tokenPaymaster = '0x6Bc8c816a2f85Ab9478Cb50e28756CCc1F20169a'
 const salt = '0x1fc44be88bb5b18430b5cafae006984102b4a3ac9887b7db77c54503a5fcd23d'
 const ownerPrivateKey = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80' // 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
@@ -17,7 +17,10 @@ async function main () {
 // owner wallet
   const wallet = new Wallet(ownerPrivateKey, ethers.provider)
 
-  const mytoken = await ethers.getContractAt('MyToken', token)
+  // const mytoken = await ethers.getContractAt('MyToken', token)
+
+  const mytokenFactory = await ethers.getContractFactory('MyToken')
+  const mytoken = await mytokenFactory.deploy('aa', 'bb')
 
   // get entrypoint and account factory
   const EntryPoint = await ethers.getContractAt('EntryPoint', entrypoint)
@@ -51,6 +54,8 @@ async function main () {
     paymasterAndData: '0x',
     signature: '0x'
   }
+
+  console.log('useroperation:', op)
 
   // signature
   const userOpHash = await EntryPoint.getUserOpHash(op)

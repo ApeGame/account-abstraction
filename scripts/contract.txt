@@ -54,3 +54,26 @@ happy token:
     coq: 0xee145Bbe6aB23Eb8770870b141E271a0B4f7bCC0
     linea: 0x83d4ef338fF1613460Ffc5006774bA38648Ca547
     base: 0xbF83dF947F7B33138f18582833A2184e6f58d481
+
+
+------------------------------------------ produce ---------------------------------------
+
+
+
+------------------------ new -----------------------
+
+deployer               : 0xb58ec3d76b2adf2943965c0e22d1d172054d4bb4 (deploy-new)
+
+-------------
+
+linea: 
+
+proxy admin            : 0x8fF74648CF5B5BC714e36530717E2945091b5127
+---------------------------------------------------------
+entrypoint address     : 0xd876ed6aAf728C927770E02672738364d759331f
+simple account factory : 0x4435aFc3474e62aB81811d5c19300788a969928b
+erc20 token            : 0xa6eb75b11b36fb9175fb94c5b96959879a26c2a8
+simple token paymaster : 0x6Bc8c816a2f85Ab9478Cb50e28756CCc1F20169a
+gnosis factory         : 0xd39CF75392AE743e8661b80f4d8675Ed90943E3f
+subsidy paymaster      : 0xf648d0F7D9Ef86F5f1445fcA7EF746A14C719A4e
+multisend call only    : 0xFCF3B75a343F5d48D7fD2bbE6ee849Ed1E563322
