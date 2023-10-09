@@ -40,7 +40,14 @@ const config: HardhatUserConfig = {
     // }
   },
   networks: {
-    dev: { url: 'http://127.0.0.1:8545', chainId: 31337 },
+    dev: {
+      url: 'http://127.0.0.1:8545',
+      chainId: 31337,
+      accounts:
+    process.env.PRIVATE_KEY_TEST_DEPLOYER !== undefined
+      ? [process.env.PRIVATE_KEY_TEST_DEPLOYER]
+      : []
+    },
     coq: {
       url: 'https://shanghai-inner-rpc.ankr.com/all/coq_testnet/rpc',
       chainId: 12077,
@@ -112,20 +119,20 @@ const config: HardhatUserConfig = {
           : []
     },
     basemaindeploy: {
-      // url: 'https://developer-access-mainnet.base.org',
-      url: 'http://127.0.0.1:8545',
+      url: 'https://developer-access-mainnet.base.org',
+      // url: 'http://127.0.0.1:8545',
       chainId: 8453,
-      gasPrice: 130000001,
+      // gasPrice: 130000001,
       accounts:
         process.env.PRIVATE_KEY_DEPLOYER !== undefined
           ? [process.env.PRIVATE_KEY_DEPLOYER]
           : []
     },
     lineamaindeploy: {
-      // url: 'https://shanghai-inner-rpc.ankr.com/all/linea_mainnet/rpc',
-      url: 'http://127.0.0.1:8545',
+      url: 'https://shanghai-inner-rpc.ankr.com/all/linea_mainnet/rpc',
+      // url: 'http://127.0.0.1:8545',
       chainId: 59144,
-      gasPrice: 815000000,
+      // gasPrice: 815000000,
       accounts:
         process.env.PRIVATE_KEY_DEPLOYER !== undefined
           ? [process.env.PRIVATE_KEY_DEPLOYER]
